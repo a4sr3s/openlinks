@@ -1,0 +1,369 @@
+---
+import "../styles/global.css";
+import { config } from "../config";
+import { themes } from "../components/themes";
+import SocialIcon from "../components/SocialIcon.astro";
+
+const theme = themes[config.theme] || themes.midnight;
+const d = theme.dark;
+const l = theme.light;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{config.siteTitle}</title>
+    <meta name="description" content={config.siteDescription} />
+    <meta property="og:title" content={config.siteTitle} />
+    <meta property="og:description" content={config.siteDescription} />
+    <meta property="og:url" content={config.siteUrl} />
+    {config.ogImage && <meta property="og:image" content={`${config.siteUrl}${config.ogImage}`} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Prevent flash: apply saved mode before paint -->
+    <script is:inline>
+      (function() {
+        var saved = localStorage.getItem('openlinks-mode');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var mode = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-mode', mode);
+      })();
+    </script>
+  </head>
+
+  <body
+    class="min-h-screen font-[Inter,system-ui,sans-serif] antialiased"
+    style={`
+      --d-bg-from:${d.bgFrom}; --d-bg-via:${d.bgVia}; --d-bg-to:${d.bgTo};
+      --l-bg-from:${l.bgFrom}; --l-bg-via:${l.bgVia}; --l-bg-to:${l.bgTo};
+      --d-card-bg:${d.cardBg}; --d-card-border:${d.cardBorder};
+      --d-card-hover-bg:${d.cardHoverBg}; --d-card-hover-border:${d.cardHoverBorder};
+      --l-card-bg:${l.cardBg}; --l-card-border:${l.cardBorder};
+      --l-card-hover-bg:${l.cardHoverBg}; --l-card-hover-border:${l.cardHoverBorder};
+      --d-text:${d.text}; --d-text-muted:${d.textMuted};
+      --l-text:${l.text}; --l-text-muted:${l.textMuted};
+      --d-accent:${d.accent}; --l-accent:${l.accent};
+      --d-avatar-ring:${d.avatarRing}; --l-avatar-ring:${l.avatarRing};
+      --d-glow:${d.glow}; --l-glow:${l.glow};
+      --d-footer:${d.footerText}; --l-footer:${l.footerText};
+      --d-orb1:${d.orb1}; --d-orb2:${d.orb2}; --d-orb3:${d.orb3};
+      --l-orb1:${l.orb1}; --l-orb2:${l.orb2}; --l-orb3:${l.orb3};
+      --d-toggle-bg:${d.toggleBg}; --d-toggle-border:${d.toggleBorder}; --d-toggle-text:${d.toggleText};
+      --l-toggle-bg:${l.toggleBg}; --l-toggle-border:${l.toggleBorder}; --l-toggle-text:${l.toggleText};
+    `}
+  >
+    <!-- Animated background orbs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Mode toggle -->
+    <button
+      id="mode-toggle"
+      type="button"
+      class="toggle-btn fixed top-5 right-5 z-50 p-2.5 rounded-full backdrop-blur-md border cursor-pointer"
+      aria-label="Toggle light/dark mode"
+    >
+      <!-- Sun icon (shown in dark mode, click to go light) -->
+      <svg class="icon-sun w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke-linecap="round"/>
+      </svg>
+      <!-- Moon icon (shown in light mode, click to go dark) -->
+      <svg class="icon-moon w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <main class="relative z-10 flex flex-col items-center px-4 py-12 sm:py-20">
+      <div class="w-full max-w-md space-y-8 animate-fade-in">
+
+        <!-- Avatar & Profile -->
+        <header class="text-center space-y-4">
+          <div class="avatar-container inline-block rounded-full ring-4 avatar-ring p-1">
+            <img
+              src={config.avatar}
+              alt={config.name}
+              width="96"
+              height="96"
+              class="w-24 h-24 rounded-full object-cover"
+            />
+          </div>
+          <div>
+            <h1 class="page-text text-2xl sm:text-3xl font-bold tracking-tight">{config.name}</h1>
+            <p class="mt-1 text-sm sm:text-base muted-text">{config.tagline}</p>
+          </div>
+        </header>
+
+        <!-- Links -->
+        <nav class="space-y-3" aria-label="Links">
+          {config.links.map((link, i) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group link-card flex items-center gap-4 px-5 py-4 rounded-2xl border backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]"
+              style={`animation-delay: ${i * 80}ms`}
+            >
+              {link.icon && (
+                <span class="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                  {link.icon}
+                </span>
+              )}
+              <div class="flex-1 min-w-0">
+                <span class="page-text font-semibold text-sm sm:text-base block">{link.title}</span>
+                {link.description && (
+                  <span class="text-xs muted-text block mt-0.5 truncate">
+                    {link.description}
+                  </span>
+                )}
+              </div>
+              <svg
+                class="w-4 h-4 muted-text group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          ))}
+        </nav>
+
+        <!-- Social Icons -->
+        {config.socials.length > 0 && (
+          <div class="flex items-center justify-center gap-4 pt-2">
+            {config.socials.map((social) => (
+              <a
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+                aria-label={social.platform}
+              >
+                <SocialIcon platform={social.platform} />
+              </a>
+            ))}
+          </div>
+        )}
+
+        <!-- Footer -->
+        {config.footerText && (
+          <footer class="text-center text-xs footer-text pt-4">
+            {config.footerLink ? (
+              <a href={config.footerLink} target="_blank" rel="noopener noreferrer" class="footer-text hover:opacity-80 transition-opacity">{config.footerText}</a>
+            ) : (
+              <p>{config.footerText}</p>
+            )}
+          </footer>
+        )}
+      </div>
+    </main>
+
+    <!-- Toggle script -->
+    <script is:inline>
+      document.getElementById('mode-toggle').addEventListener('click', function() {
+        var root = document.documentElement;
+        var current = root.getAttribute('data-mode') || 'dark';
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-mode', next);
+        localStorage.setItem('openlinks-mode', next);
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  /* ===== Themed properties via data-mode ===== */
+
+  /* Default to dark to prevent flash */
+  body {
+    background: linear-gradient(135deg, var(--d-bg-from), var(--d-bg-via), var(--d-bg-to));
+    color: var(--d-text);
+    transition: background 0.6s ease, color 0.5s ease;
+  }
+
+  :global([data-mode="light"]) body {
+    background: linear-gradient(135deg, var(--l-bg-from), var(--l-bg-via), var(--l-bg-to));
+    color: var(--l-text);
+  }
+
+  /* Page text */
+  .page-text {
+    color: var(--d-text);
+    transition: color 0.5s ease;
+  }
+  :global([data-mode="light"]) .page-text {
+    color: var(--l-text);
+  }
+
+  /* Muted text */
+  .muted-text {
+    color: var(--d-text-muted);
+    transition: color 0.5s ease;
+  }
+  :global([data-mode="light"]) .muted-text {
+    color: var(--l-text-muted);
+  }
+
+  /* Footer */
+  .footer-text {
+    color: var(--d-footer);
+    transition: color 0.5s ease;
+  }
+  :global([data-mode="light"]) .footer-text {
+    color: var(--l-footer);
+  }
+
+  /* Link cards */
+  .link-card {
+    background: var(--d-card-bg);
+    border-color: var(--d-card-border);
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out both;
+  }
+  .link-card:hover {
+    background: var(--d-card-hover-bg);
+    border-color: var(--d-card-hover-border);
+    box-shadow: 0 10px 25px var(--d-glow);
+  }
+  :global([data-mode="light"]) .link-card {
+    background: var(--l-card-bg);
+    border-color: var(--l-card-border);
+  }
+  :global([data-mode="light"]) .link-card:hover {
+    background: var(--l-card-hover-bg);
+    border-color: var(--l-card-hover-border);
+    box-shadow: 0 10px 25px var(--l-glow);
+  }
+
+  /* Avatar */
+  .avatar-container {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    cursor: pointer;
+  }
+  .avatar-container:hover {
+    transform: scale(1.08) rotate(3deg);
+    box-shadow: 0 0 30px var(--d-avatar-ring);
+  }
+  :global([data-mode="light"]) .avatar-container:hover {
+    box-shadow: 0 0 30px var(--l-avatar-ring);
+  }
+
+  .avatar-ring {
+    --tw-ring-color: var(--d-avatar-ring);
+    transition: --tw-ring-color 0.5s ease;
+  }
+  :global([data-mode="light"]) .avatar-ring {
+    --tw-ring-color: var(--l-avatar-ring);
+  }
+
+  /* Social icons */
+  .social-icon {
+    color: var(--d-text-muted);
+    transition: all 0.3s ease;
+  }
+  .social-icon:hover {
+    color: var(--d-accent);
+    transform: scale(1.1);
+  }
+  :global([data-mode="light"]) .social-icon {
+    color: var(--l-text-muted);
+  }
+  :global([data-mode="light"]) .social-icon:hover {
+    color: var(--l-accent);
+  }
+
+  /* Toggle button */
+  .toggle-btn {
+    background: var(--d-toggle-bg);
+    border-color: var(--d-toggle-border);
+    color: var(--d-toggle-text);
+    transition: all 0.3s ease;
+  }
+  .toggle-btn:hover {
+    transform: scale(1.1);
+  }
+  .toggle-btn:active {
+    transform: scale(0.95);
+  }
+  :global([data-mode="light"]) .toggle-btn {
+    background: var(--l-toggle-bg);
+    border-color: var(--l-toggle-border);
+    color: var(--l-toggle-text);
+  }
+
+  /* Toggle icon visibility */
+  .icon-sun { display: block; }
+  .icon-moon { display: none; }
+  :global([data-mode="light"]) .icon-sun { display: none; }
+  :global([data-mode="light"]) .icon-moon { display: block; }
+
+  /* ===== Orbs ===== */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    transition: background 0.8s ease;
+  }
+
+  .orb-1 {
+    width: 400px; height: 400px;
+    background: var(--d-orb1);
+    top: -100px; right: -100px;
+    animation: float1 20s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 300px; height: 300px;
+    background: var(--d-orb2);
+    bottom: 10%; left: -80px;
+    animation: float2 25s ease-in-out infinite;
+  }
+  .orb-3 {
+    width: 250px; height: 250px;
+    background: var(--d-orb3);
+    top: 40%; right: -60px;
+    animation: float3 18s ease-in-out infinite;
+  }
+
+  :global([data-mode="light"]) .orb-1 { background: var(--l-orb1); opacity: 0.25; }
+  :global([data-mode="light"]) .orb-2 { background: var(--l-orb2); opacity: 0.25; }
+  :global([data-mode="light"]) .orb-3 { background: var(--l-orb3); opacity: 0.25; }
+
+  /* ===== Animations ===== */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out both;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-40px, 60px) scale(1.1); }
+    66% { transform: translate(30px, -30px) scale(0.95); }
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -40px) scale(1.05); }
+    66% { transform: translate(-30px, 50px) scale(0.9); }
+  }
+  @keyframes float3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-60px, 30px) scale(1.15); }
+    66% { transform: translate(40px, -60px) scale(0.85); }
+  }
+
+  html { scroll-behavior: smooth; }
+</style>
