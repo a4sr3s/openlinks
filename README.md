@@ -1,6 +1,6 @@
 # OpenLinks
 
-A modern, customizable Linktree-style landing page built with **Astro 6** + **Tailwind CSS 4**. AI-first — use Claude to customize it in seconds.
+A modern, customizable landing page built with **Astro 6** + **Tailwind CSS 4**. AI-first — use Claude to customize it in seconds.
 
 [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/your-username/openlinks/tree/main)
 
