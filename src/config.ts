@@ -100,6 +100,6 @@ export const config: SiteConfig = {
   ogImage: "/og.png",
 
   // --- Footer ---
-  footerText: "Made with ♥ by Alexis",
-  footerLink: "https://alexisreyes.com",
+  footerText: "Powered by OpenLinks",
+  footerLink: "https://github.com/a4sr3s/openlinks",
 };
